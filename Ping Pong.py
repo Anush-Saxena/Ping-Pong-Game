@@ -52,7 +52,7 @@ def start():
      font=pg.font.Font("freesansbold.ttf",30)
      xscr=yscr=10
      pg.mixer.music.load("3.mp3")
-     pg.mixer.music.play()
+     pg.mixer.music.play(loops=-1)
      img=pg.image.load("8.jpg")
      while run:
           score=font.render("SCORE :"+str(scr),True,("white"))  #str(scr) bcz it accepts str type only
