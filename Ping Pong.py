@@ -1,8 +1,17 @@
-import pygame as pg
-from tkinter import *
-from tkinter import messagebox
-import mysql.connector as msc
-import random
+try:
+     import pygame as pg
+     from tkinter import *
+     from tkinter import messagebox
+     import mysql.connector as msc
+     import random
+     run=True
+except:
+     print("These Libraries must be installed!")
+     print("pygame")
+     print("tkinter")
+     print("mysql.connector")
+     print("random")
+     run=False
 
 # wtgw=width of game_window(gw) ;  htgw=height of gw ;  dimens=dimensions ;  t_lab=text for label ;  t_but=text for button ;   w_but=width of button ;
 # lab_x=x coord. of label ;   and similarly for others  cmnd=command ;   plr=player ;   scr=score ;   con=connection of database n python ;   cur=cursor ;
@@ -27,7 +36,7 @@ def checkplr():
      global tplr,j,con,cur,players,cont,pname
      pname=tplr.get().strip()
      if len(pname)>0 and len(pname)<16:
-          con=msc.connect(host="localhost",user="root",passwd="password",database="ping_pong")
+          con=msc.connect(host="localhost",user="root",passwd=password,database="ping_pong")
           cur=con.cursor()
           q="select * from ping"
           cur.execute(q)
@@ -52,7 +61,7 @@ def start():
      font=pg.font.Font("freesansbold.ttf",30)
      xscr=yscr=10
      pg.mixer.music.load("3.mp3")
-     pg.mixer.music.play(loops=-1)
+     pg.mixer.music.play()
      img=pg.image.load("8.jpg")
      while run:
           score=font.render("SCORE :"+str(scr),True,("white"))  #str(scr) bcz it accepts str type only
@@ -122,11 +131,13 @@ def start():
           q1="insert into ping values('{}',{})".format(pname,scr)
           cur.execute(q1)
      con.commit()
-     con.close()
      lbar,wbar,v,xbar,ybar,rball,vx,vy,i,mx,my=200,50,5,300,740,50,2,3,0,0,0
      xball=random.randint(300,700)
      yball=random.randint(100,470)
      scr=0
+     if messagebox.askretrycancel(""," RETRY ?"):
+          start()
+     con.close()
 
 def checkscr():
      global tplr,cont,pname
@@ -141,7 +152,7 @@ def checkscr():
 
 def fetch(x):
      global l,pname
-     con=msc.connect(host="localhost",user="root",passwd="password",database="ping_pong")
+     con=msc.connect(host="localhost",user="root",passwd=password,database="ping_pong")
      cur=con.cursor()
      if x=="one":
           q="select * from ping"
@@ -181,26 +192,73 @@ def dispscr(plrname,plrscr):
      vsep.place(x=202,y=0)
      scrdisp.mainloop()
      
-wtgw,htgw=1440,795
-lbar,wbar,v,xbar,ybar,rball,vx,vy,i,mx,my,j=200,50,5,300,740,50,1,3,0,0,0,0
-xball=random.randint(300,700)
-yball=random.randint(100,470)
-scr=0
+def __main__():
+     global wtgw,htgw,lbar,wbar,v,xbar,ybar,rball,vx,vy,i,mx,my,j,xball,yball,scr
+     wtgw,htgw=1440,795
+     lbar,wbar,v,xbar,ybar,rball,vx,vy,i,mx,my,j=200,50,5,300,740,50,1,3,0,0,0,0
+     xball=random.randint(300,700)
+     yball=random.randint(100,470)
+     scr=0
 
-root=Tk()
-#   wtmw x htmw     color=  #cdfcfc   or   #bdffdb
-root.geometry("1080x795+100+-3")
-root.configure(bg="#cdfcfc")
-root.title("   Ping   Pong")
-l1=Label(root,width=21,bg="#cdfcfc",fg="purple",text=" WELCOME  TO  PING  PONG ",font="algerian 60 underline")
-b1=Button(root,command=cmnd1,width=5,pady=0,bd=15,text=" PLAY ",bg="black",fg="white",font="courier 40 bold italic")
-b2=Button(root,command=cmnd2,width=11,pady=0,bd=15,text=" SEE SCORES ",bg="black",fg="white",font="courier 40 bold italic")
-b3=Button(root,command=lambda : fetch("top"),width=11,pady=0,bd=15,text=" BEST SCORE ",bg="black",fg="white",font="courier 40 bold italic")
-b4=Button(root,command=lambda : root.destroy(),width=5,pady=0,bd=10,text=" QUIT ",bg="black",fg="white",font=" forte 30 ")
+     root=Tk()
+     #   wtmw x htmw     color=  #cdfcfc   or   #bdffdb
+     root.geometry("1080x795+100+-3")
+     root.configure(bg="#cdfcfc")
+     root.title("   Ping   Pong")
+     l1=Label(root,width=21,bg="#cdfcfc",fg="purple",text=" WELCOME  TO  PING  PONG ",font="algerian 60 underline")
+     b1=Button(root,command=cmnd1,width=5,pady=0,bd=15,text=" PLAY ",bg="black",fg="white",font="courier 40 bold italic")
+     b2=Button(root,command=cmnd2,width=11,pady=0,bd=15,text=" SEE SCORES ",bg="black",fg="white",font="courier 40 bold italic")
+     b3=Button(root,command=lambda : fetch("top"),width=11,pady=0,bd=15,text=" BEST SCORE ",bg="black",fg="white",font="courier 40 bold italic")
+     b4=Button(root,command=lambda : root.destroy(),width=5,pady=0,bd=10,text=" QUIT ",bg="black",fg="white",font=" forte 30 ")
 
-l1.place(x=25,y=100)
-b1.place(x=53,y=300)
-b2.place(x=249,y=431)
-b3.place(x=637,y=562)
-b4.place(x=450,y=700)
-root.mainloop()
+     l1.place(x=25,y=100)
+     b1.place(x=53,y=300)
+     b2.place(x=249,y=431)
+     b3.place(x=637,y=562)
+     b4.place(x=450,y=700)
+     root.mainloop()
+
+def paswrd():
+     def lenchk():
+          global password
+          if len(tp.get())>0:
+               z.append(tp.get())
+               password=tp.get()
+               pcont.destroy()
+          else:
+               pcont.destroy()
+               messagebox.showinfo("","Enter your MySQL Password")
+               paswrd()
+     z=[]
+     pcont=Tk()
+     pcont.geometry("450x200+300+300")
+     pcont.config(bg="#bdffdb")
+     lp=Label(pcont,text="Enter PASSWORD of your \nMySQL Server",bg="#bdffdb",fg="black",font="courier 23 bold")
+     bp=Button(pcont,width=3,text="OK",pady=-1,command=lenchk,bg='white',fg="black",font="courier 22 bold",bd=4)
+     tp=Entry(pcont,width=14,bg='white',fg="black",font="courier 22 bold",bd=4,show="*")
+     lp.place(x=15,y=14)
+     tp.place(x=40,y=117)
+     bp.place(x=330,y=106)
+     pcont.mainloop()
+     if len(z)>0:
+          try:
+               con=msc.connect(user="root",host="localhost",passwd=password)
+               cur=con.cursor()
+               q="create database if not exists ping_pong"
+               cur.execute(q)
+               con.commit()
+               q="use ping_pong"
+               cur.execute(q)
+               con.commit()
+               q="create table if not exists ping(pname varchar(15) primary key,pscore int)"
+               cur.execute(q)
+               con.commit()
+               con.close()
+               __main__()
+          except:
+               messagebox.showerror(""," Wrong Password ")
+               paswrd()
+
+
+if __name__=="__main__" and run:
+     paswrd()
